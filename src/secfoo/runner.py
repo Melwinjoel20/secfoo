@@ -573,6 +573,18 @@ def execute_runs(
             )
             # Once per target, not per skill: every skill scans the same tree.
             stack = detect_stack(workdir)
+            # Memory Bank: if the repo hasn't changed since the last scan, ask before re-running.
+            current_commit = _git_head_commit(workdir)
+            if current_commit:
+                for skill_id in skill_ids:
+                    prev = repo.get_last_commit(project_id=project_id, skill_id=skill_id)
+                    if prev and prev == current_commit:
+                        answer = input(
+                            f"\nCommit {current_commit[:8]} was already scanned for {skill_id}. Scan again? (yes/no): "
+                        ).strip().lower()
+                        if answer not in ("y", "yes"):
+                            return []
+
             with ThreadPoolExecutor(max_workers=max(1, len(skill_ids))) as pool:
                 futures = [
                     pool.submit(

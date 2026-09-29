@@ -79,8 +79,6 @@ def _git_changed_files(workdir: Path, prev_commit: str) -> tuple[list[str], list
             ["git", "-C", str(workdir), "diff", "--name-status", f"{prev_commit}..HEAD"],
             capture_output=True, text=True, timeout=30,
         )
-        import sys
-        print(f"[GITDIFF] rc={result.returncode} stdout={result.stdout!r} stderr={result.stderr!r}", file=sys.stderr)
         if result.returncode != 0:
             return [], []
         changed, deleted = [], []
@@ -138,11 +136,8 @@ def build_graph(litellm, StateGraph, START, END):
         prev_commit = state["prev_commit"]
         deleted: list[str] = []
 
-        import sys
-        print(f"[MEMBANK] prev_commit={prev_commit!r} workdir={workdir}", file=sys.stderr)
         if prev_commit:
             changed, deleted = _git_changed_files(workdir, prev_commit)
-            print(f"[MEMBANK] changed={changed} deleted={deleted}", file=sys.stderr)
             if changed or deleted:
                 # Incremental scan: only send changed files to the model.
                 code = collect_files(workdir, changed_only=changed)
