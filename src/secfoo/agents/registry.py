@@ -6,6 +6,8 @@ from secfoo.agents.base import AgentAdapter
 from secfoo.agents.claude import ClaudeAdapter
 from secfoo.agents.codex import CodexAdapter
 from secfoo.agents.cursor import CursorAdapter
+from secfoo.agents.devin import DevinAdapter
+from secfoo.agents.droid import DroidAdapter
 from secfoo.agents.gemini import GeminiAdapter
 from secfoo.agents.secfoo import SecFooAdapter
 
@@ -17,6 +19,8 @@ ADAPTERS: dict[str, type[AgentAdapter]] = {
     ApiAdapter.name: ApiAdapter,
     SecFooAdapter.name: SecFooAdapter,
     CodexAdapter.name: CodexAdapter,
+    DroidAdapter.name: DroidAdapter,
+    DevinAdapter.name: DevinAdapter,
 }
 
 
