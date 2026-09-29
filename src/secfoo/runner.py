@@ -219,7 +219,9 @@ def _run_single_skill(
             on_skill_start(skill.name)
 
         adapter = get_adapter(agent_id)
-        result = adapter.run(prompt, workdir=target_ctx.local_path, timeout=timeout)
+        # Memory Bank: look up the last successful commit so the adapter can diff and send only changed files.
+        prev_commit = repo.get_last_commit(project_id=project_id, skill_id=skill.id)
+        result = adapter.run(prompt, workdir=target_ctx.local_path, timeout=timeout, prev_commit=prev_commit)
         # Memory Bank: capture HEAD SHA so future runs can diff against this baseline.
         target_commit = _git_head_commit(target_ctx.local_path)
 

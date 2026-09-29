@@ -99,7 +99,7 @@ class AgentAdapter(ABC):
         """Pull token counts / cost out of raw stdout. Default: unknown."""
         return Usage()
 
-    def run(self, prompt: str, *, workdir: Path, timeout: int | None = None) -> AgentResult:
+    def run(self, prompt: str, *, workdir: Path, timeout: int | None = None, prev_commit: str | None = None) -> AgentResult:  # Memory Bank: prev_commit passed through; CLI adapters ignore it.
         if not self.is_available():
             return AgentResult(
                 agent=self.name,
