@@ -100,6 +100,23 @@ class AgentAdapter(ABC):
         return Usage()
 
     def run(self, prompt: str, *, workdir: Path, timeout: int | None = None, prev_commit: str | None = None) -> AgentResult:  # Memory Bank: prev_commit passed through; CLI adapters ignore it.
+    def extract_usage_from_stderr(self, stderr: str) -> Usage:
+        """Pull token counts / cost out of raw stderr. Default: unknown.
+
+        For CLIs that print usage alongside their progress output on stderr
+        rather than in stdout (e.g. Codex). Only consulted when
+        `extract_usage()` found nothing, so adapters that already read usage
+        from stdout are unaffected.
+        """
+        return Usage()
+
+    def _collect_usage(self, stdout: str, stderr: str) -> Usage:
+        usage = self.extract_usage(stdout)
+        if usage == Usage():
+            usage = self.extract_usage_from_stderr(stderr)
+        return usage
+
+    def run(self, prompt: str, *, workdir: Path, timeout: int | None = None) -> AgentResult:
         if not self.is_available():
             return AgentResult(
                 agent=self.name,
@@ -133,7 +150,7 @@ class AgentAdapter(ABC):
             stdout, stderr = proc.communicate(timeout=effective_timeout)
             duration = time.monotonic() - started
             status: Status = "success" if proc.returncode == 0 else "failed"
-            usage = self.extract_usage(stdout)
+            usage = self._collect_usage(stdout, stderr)
             return AgentResult(
                 agent=self.name,
                 exit_code=proc.returncode,
