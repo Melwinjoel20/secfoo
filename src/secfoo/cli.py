@@ -98,6 +98,8 @@ class AgentId(str, Enum):
     COPILOT = "copilot"
     API = "api"
     CODEX = "codex"
+    DROID = "droid"
+    DEVIN = "devin"
 
 
 class DepthId(str, Enum):
