@@ -8,6 +8,11 @@ build/
 dist/
 .DS_Store
 
+# Local-only secrets (API keys for manual testing) -- never commit these.
+.env
+.env.*
+*.secret
+
 # Unrelated third-party repo cloned into this directory for testing --
 # never belongs in this repo (already caused one real incident: it leaked
 # into a published PyPI sdist before this line existed).
