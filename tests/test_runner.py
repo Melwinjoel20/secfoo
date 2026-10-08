@@ -108,7 +108,7 @@ def test_a_run_that_crashes_is_marked_failed_not_left_running(tmp_path, monkeypa
     target_dir.mkdir()
 
     class _CrashingAdapter(_SleepyAdapter):
-        def run(self, prompt, *, workdir, timeout=None):
+        def run(self, prompt, *, workdir, timeout=None, prev_commit=None):
             raise FileNotFoundError(2, "The system cannot find the file specified")
 
     monkeypatch.setattr("secfoo.runner.get_adapter", lambda agent_id: _CrashingAdapter())
