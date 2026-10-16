@@ -70,6 +70,10 @@ class AgentResult:
     input_tokens: int | None = None
     output_tokens: int | None = None
     cost_usd: float | None = None
+    # Memory Bank: for an incremental scan, the paths it covered (files sent
+    # to the model plus files deleted since the last scan). None means a
+    # full scan. The runner only closes findings located in these paths.
+    scan_scope: list[str] | None = None
 
 
 @dataclass(frozen=True)
